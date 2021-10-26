@@ -82,6 +82,40 @@ get '/finstagram_posts/:id' do
   erb(:"finstagram_posts/show")               # render app/views/finstagram_posts/show.erb
 end
 
+post '/comments' do
+   # point values from params to variables
+   text = params[:text]
+   finstagram_post_id = params[:finstagram_post_id]
+ 
+   # instantiate a comment with those values & assign the comment to the `current_user`
+   comment = Comment.new({ text: text, finstagram_post_id: finstagram_post_id, user_id: current_user.id })
+ 
+   # save the comment
+   comment.save
+ 
+   # `redirect` back to wherever we came from
+   redirect(back)
+end
+
+post '/likes' do
+  # point values from params to variables
+  finstagram_post_id = params[:finstagram_post_id]
+
+  # instantiate a like with those values & assign the like to the `current_user`
+  like = Like.new({ finstagram_post_id: finstagram_post_id, user_id: current_user.id })
+
+  # save the like
+  like.save
+
+  # `redirect` back to wherever we came from
+  redirect(back)
+end
+delete '/likes/:id' do
+  like = Like.find(params[:id])
+  like.destroy
+  redirect(back)
+end
+
 =begin
 # this is old code
 def humanized_time_ago(time_ago_in_minutes)
